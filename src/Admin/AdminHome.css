@@ -1,0 +1,32 @@
+/* AdminHome.css */
+.card {
+    border: none;
+    border-radius: 0.25rem;
+  }
+  
+  .card-body {
+    padding: 1.5rem;
+  }
+  
+  .card-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .card-subtitle {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .btn-light {
+    color: #000;
+    background-color: #fff;
+    border-color: #ddd;
+  }
+  
+  .btn-light:hover {
+    color: #000;
+    background-color: #f8f9fa;
+    border-color: #ddd;
+  }
+  
