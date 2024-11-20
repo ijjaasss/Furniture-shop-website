@@ -65,7 +65,8 @@ function ProductFilter() {
                   src={selectingproduct.image}
                   className="card-img-top"
                   alt={selectingproduct.title}
-                />
+                  />
+               
                 <div className="card-body">
                   <div className="text-center">
                     <h5 className="card-title">{selectingproduct.title}</h5>

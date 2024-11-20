@@ -23,6 +23,7 @@ function Payment() {
  const handleChange = async()=>{
   
   let updatedbuy=[...buy,...cartt]
+  
  
     alert('pay to conform');
     axios.patch(`http://localhost:5001/users/${id}`,{buy:updatedbuy})
