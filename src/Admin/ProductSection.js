@@ -5,11 +5,10 @@ import Modal from 'react-modal';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-
 Modal.setAppElement('#root');
 
 function ProductSection() {
-  const navigate=useNavigate()
+  const navigate = useNavigate();
   const { cart, setCart } = useContext(ContextOfAll);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [newProduct, setNewProduct] = useState({
@@ -21,11 +20,9 @@ function ProductSection() {
     image: ''
   });
   const [editMode, setEditMode] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null);
 
   const openModal = (product = null) => {
     if (product) {
-      setSelectedProduct(product);
       setNewProduct({
         id: product.id,
         quntity: product.quntity,
@@ -51,7 +48,6 @@ function ProductSection() {
 
   const closeModal = () => {
     setModalIsOpen(false);
-    setSelectedProduct(null);
     setNewProduct({
       id: '',
       quntity: '',
@@ -74,11 +70,10 @@ function ProductSection() {
     e.preventDefault();
     try {
       if (editMode) {
-       
         await axios.put(`http://localhost:5001/products/${newProduct.id}`, newProduct);
         setCart(prevCart => prevCart.map(p => (p.id === newProduct.id ? newProduct : p)));
       } else {
-        alert('addProduct')
+        alert('addProduct');
         const response = await axios.post('http://localhost:5001/products', newProduct);
         setCart(prevCart => [...prevCart, response.data]);
       }
@@ -97,16 +92,15 @@ function ProductSection() {
     }
   };
 
-  useEffect(()=>{
-    const fetchinggg =()=>{
+  useEffect(() => {
+    const fetchinggg = () => {
       let username = sessionStorage.getItem('username');
       if (!username) {
         navigate('/login');
       }
-    
-    }
-    fetchinggg()
-  },[cart,handleAddOrUpdateProduct,handleDeleteProduct])
+    };
+    fetchinggg();
+  }, [navigate]);  // Add 'navigate' to the dependency array
 
   return (
     <div>
@@ -118,70 +112,67 @@ function ProductSection() {
       >
         Add New Product
       </button>
-      {
-        cart.map(p => (
-          <section
-            key={p.id}
-            className="w-100 px-4 py-5"
-            style={{ backgroundColor: '#9de2ff', borderRadius: '.5rem .5rem 0 0' }}
-          >
-            <div className="row d-flex justify-content-center">
-              <div className="col col-md-9 col-lg-7 col-xl-6">
-                <div className="card" style={{ borderRadius: '15px' }}>
-                  <div className="card-body p-4">
-                    <div className="d-flex">
-                      <div className="flex-shrink-0">
-                        <img
-                          src={p.image}
-                          alt="Product"
-                          className="img-fluid"
-                          style={{ width: '180px', borderRadius: '10px' }}
-                        />
+      {cart.map(p => (
+        <section
+          key={p.id}
+          className="w-100 px-4 py-5"
+          style={{ backgroundColor: '#9de2ff', borderRadius: '.5rem .5rem 0 0' }}
+        >
+          <div className="row d-flex justify-content-center">
+            <div className="col col-md-9 col-lg-7 col-xl-6">
+              <div className="card" style={{ borderRadius: '15px' }}>
+                <div className="card-body p-4">
+                  <div className="d-flex">
+                    <div className="flex-shrink-0">
+                      <img
+                        src={p.image}
+                        alt="Product"
+                        className="img-fluid"
+                        style={{ width: '180px', borderRadius: '10px' }}
+                      />
+                    </div>
+                    <div className="flex-grow-1 ms-3">
+                      <h5 className="mb-1">{p.title}</h5>
+                      <p className="mb-2 pb-1">{p.description}</p>
+                      <div className="d-flex justify-content-start rounded-3 p-2 mb-2 bg-body-tertiary">
+                        <div>
+                          <p className="small text-muted mb-1">Price</p>
+                          <p className="mb-0">{p.price}</p>
+                        </div>
+                        <div className="px-3">
+                          <p className="small text-muted mb-1">ID</p>
+                          <p className="mb-0">{p.id}</p>
+                        </div>
+                        <div className="px-3">
+                          <p className="small text-muted mb-1">Quantity</p>
+                          <p className="mb-0">{p.quntity}</p>
+                        </div>
                       </div>
-                      <div className="flex-grow-1 ms-3">
-                        <h5 className="mb-1">{p.title}</h5>
-                        <p className="mb-2 pb-1">{p.description}</p>
-                        <div className="d-flex justify-content-start rounded-3 p-2 mb-2 bg-body-tertiary">
-                          <div>
-                            <p className="small text-muted mb-1">Price</p>
-                            <p className="mb-0">{p.price}</p>
-                          </div>
-                          <div className="px-3">
-                            <p className="small text-muted mb-1">ID</p>
-                            <p className="mb-0">{p.id}</p>
-                          </div>
-                          <div className="px-3">
-                            <p className="small text-muted mb-1">Quantity</p>
-                            <p className="mb-0">{p.quntity}</p>
-                          </div>
-                        </div>
-                        <div className="d-flex pt-1">
-                          <button
-                            type="button"
-                            className="btn btn-outline-primary me-1 flex-grow-1"
-                            onClick={() => openModal(p)}
-                          >
-                            Edit
-                          </button>
-                          <button
-                            type="button"
-                            className="btn btn-outline-danger"
-                            onClick={() => handleDeleteProduct(p.id)}
-                          >
-                            Delete
-                          </button>
-                        </div>
+                      <div className="d-flex pt-1">
+                        <button
+                          type="button"
+                          className="btn btn-outline-primary me-1 flex-grow-1"
+                          onClick={() => openModal(p)}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-outline-danger"
+                          onClick={() => handleDeleteProduct(p.id)}
+                        >
+                          Delete
+                        </button>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </section>
-        ))
-      }
+          </div>
+        </section>
+      ))}
 
-   
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
