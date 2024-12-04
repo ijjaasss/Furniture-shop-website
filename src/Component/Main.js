@@ -2,7 +2,6 @@ import React from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Home from '../Page/Home'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'react-toastify/dist/ReactToastify.css';
 import AboutUs from '../Page/AboutUs';
 import Register from '../Page/Register';
 import Login from '../Page/Login';
@@ -14,6 +13,7 @@ import AdminHome from '../Admin/AdminHome';
 import UserFullShow from '../Admin/UserFullShow';
 import UserSection from '../Admin/UserSection';
 import ProductSection from '../Admin/ProductSection';
+import Page404 from '../Page/Page404';
 
 function Main() {
 
@@ -33,6 +33,7 @@ function Main() {
          <Route path='/allusers' element={<UserSection/>}/>
          <Route path='/adminproduct' element={<ProductSection />}/>
          <Route path='/userfullshow' element={<UserFullShow />}/>
+         <Route path='*' element={<Page404 />}/>
       </Routes>
       </BrowserRouter>
     </div>

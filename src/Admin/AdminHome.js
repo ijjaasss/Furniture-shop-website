@@ -12,22 +12,40 @@ function AdminHome() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const usee = await axios.get('http://localhost:5001/users');
-        setUsers(usee.data);
-        const response = await axios.get('http://localhost:5001/products');
-        setProduct(response.data);
-
         let username = sessionStorage.getItem('username');
-        if (!username) {
+        
+        if (username!==process.env.REACT_APP_USER_NAME) {
           navigate('/login');
         }
+        const usee = await axios.get('/api/admin/user');
+        setUsers(usee.data.users);
+        const response = await axios.get('api/v1/products');
+        setProduct(response.data);
+
+      
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
 
-    fetchUser();
+    fetchUser(); 
   }, [navigate]);
+  const fetchUsers = async () => {
+    try {
+      axios.get('/api/admin/user')
+      .then(response => {
+          console.log(response.data);
+      })
+      .catch(error => {
+          console.error('Error fetching admin data:', error);
+      });
+     
+     
+    } catch (error) {
+        console.error('Error fetching users:', error);
+    }
+};
+fetchUsers()
 
   return (
     <>

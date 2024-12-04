@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ContextOfAll } from '../Context/ContextProvider';
 import axios from 'axios';
 
@@ -7,6 +7,7 @@ import axios from 'axios';
 
 function UserFullShow() {
     const { userId } = useContext(ContextOfAll); 
+    
     const id=userId
     const [user, setUser] = useState({}); 
     const [buy,setBuy]=useState([])
@@ -15,13 +16,18 @@ function UserFullShow() {
     const [color,setColor]=useState('red')
     const [text,setText]=useState('Block')
  
-    
+    const navigate=useNavigate()
 
     useEffect(() => {
         const fetchUser = async () => {
             if (!id) return;
             try {
-                const response = await axios.get(`http://localhost:5001/users/${id}`); 
+                let username = sessionStorage.getItem('username');
+        
+        if (username!==process.env.REACT_APP_USER_NAME) {
+          navigate('/login');
+        }
+                const response = await axios.get(`/api/v1/auth/findusers/${id}`); 
                 setUser(response.data);
                 setBuy(response.data.buy)
                 setCart(response.data.cart)
@@ -36,11 +42,15 @@ function UserFullShow() {
 
         fetchUser();
        
-    }, [userId,isBloked,id]); 
+    }, [userId,isBloked,id,navigate]); 
     const blockHandle = async () => {
         try {
-          await axios.patch(`http://localhost:5001/users/${userId}`, { isBlock: !isBloked });
+          
+            await axios.patch(`/api/v1/auth/blockunblock/${id}`, { isBlock: !isBloked });
+         
           setIsBloked(!isBloked);
+        
+          
           isBloked?setColor('green'):setColor('red');
           isBloked?setText('unBlock'):setText('Block');
           
@@ -71,7 +81,7 @@ function UserFullShow() {
                                     />
                                     <h5>{user.name}</h5>
                                     <p>@{user.userName}</p>
-                                    <p>id : {user.id}</p>
+                                    <p>id : {user._id}</p>
                                     <i className="far fa-edit mb-5"></i>
                                 </div>
                                 <div className="col-md-8">
@@ -101,7 +111,7 @@ function UserFullShow() {
                                         <div className="row pt-1">
                                             <div className="col-6 mb-3">
                                                 <h6>Buy product</h6>
-                                                <p className="text-muted"><ul>{buy? buy.map(p=><li>{p.title}<br/> id:{p.id} &nbsp;  q:{p.quntity} <hr /></li>) : 'No product purches' }</ul></p>
+                                                <p className="text-muted"><ul>{buy? buy.map(p=><li>{p.title}<br/> id:{p._id} &nbsp;  q:{p.quntity} <hr /></li>) : 'No product purches' }</ul></p>
                                             </div>
                                             <div className="col-6 mb-3">
                                                 <h6>Cart product</h6>

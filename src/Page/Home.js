@@ -1,4 +1,3 @@
-import React from 'react'
 import { Link } from 'react-router-dom'
 import Product from '../Component/Product'
 import Footer from '../Component/Footer'
@@ -7,7 +6,10 @@ import Footer from '../Component/Footer'
 
 
 
+
 function Home() {
+   
+  
    
   return (
     <div>
@@ -46,6 +48,7 @@ function Home() {
       </div>
     </nav>
     <img src="des1.png" style={{ width: '100%' }} alt='img'/>
+  
 
     <Product />
 
