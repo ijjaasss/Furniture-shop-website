@@ -2,18 +2,28 @@ import React, { useContext }  from 'react';
 import { Link, useNavigate} from 'react-router-dom';
 import { BsCart } from 'react-icons/bs';
 import { ContextOfAll } from '../Context/ContextProvider';
+import axios from 'axios';
 
 
 
 function Header() {
  
   const navigate = useNavigate()
-  const {cartt}=useContext(ContextOfAll)
+  const {cartt,setAuth}=useContext(ContextOfAll)
  
   const handleLogout = async () => {
-       
-    localStorage.removeItem('user')
-  navigate('/login')
+    try {
+      await axios.post('/api/v1/auth/logout');
+      
+      // Clear auth context and sessionStorage
+      setAuth({});
+      sessionStorage.clear();  // Or localStorage if you're using it
+      navigate('/login');  
+    } catch (error) {
+      console.log(error);
+      
+    }
+ 
    return
  };
 

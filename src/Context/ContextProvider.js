@@ -15,25 +15,35 @@ function ContextProvider({ children }) {
   const [cart, setCart] = useState([]);
   const [cartt, setCartt] = useState([]);
   const [buy,setBuy]=useState([])
-  const [users,setUsers]=useState([])
   const [selectingproduct, setSelectingproduct] = useState([]);
   const [userId,setUserId]=useState([])
   const [isBloked,setIsBolked]=useState(false)
+  const [user,setUser]=useState('')
 
+const [auth,setAuth]=useState({
+  user:null,
+  token:''
+})
 
   
   
   let id;
-  if (localStorage.getItem("user")) {
-    id = JSON.parse(localStorage.getItem("user")).id;
+
+ 
+  if (sessionStorage.getItem('user') ) {
+    id = JSON.parse(sessionStorage.getItem('user')).user.id
   }
 
   const FindProduct = async (productId) => {
     try {
-      const response = await axios.get(`http://localhost:5001/products/${productId}`);
+      
+      const response = await axios.get(`/api/v1/products`);
       const data = response.data;
-      setSelectingproduct(data);
-      await axios.patch(`http://localhost:5001/users/${id}`, { temp: data });
+      var a=data.filter((val)=>val._id===productId)       
+      setSelectingproduct(a[0])
+
+    //  await axios.patch(`/api/v1/auth/findusers/${id}`,{temp:a})
+      // await axios.patch(`/api/v1/user/${id}`, { temp: a[0] });
     } catch (err) {
       console.error('Error finding product:', err);
     }
@@ -41,29 +51,43 @@ function ContextProvider({ children }) {
 
   const handleIncrementProduct = async (productId) => {
     try {
-      const updatedCart = cartt.map(product => {
-        if (product.id === productId && product.quntity < 10) {
+      
+      const updatedCart =  cartt.map(product => {
+       
+       
+        if (product._id === productId && product.quntity < 10) {
+          
           return { ...product, quntity: product.quntity + 1 };
         }
         return product;
       });
+    
 
-      await axios.patch(`http://localhost:5001/users/${id}`, { cart: updatedCart });
+ 
+      setCartt(updatedCart)
+      await axios.patch(`/api/v1/updatecart/${id}`, { temp: updatedCart }).then(()=>{
+       
+      })
    
     } catch (err) {
       console.error('Error updating product quantity:', err);
     }
   };
   const handleDecrementProduct = async (productId) => {
+    
     try {
+     
       const updatedCart = cartt.map(product => {
-        if (product.id === productId && product.quntity > 1) {
+        if (product._id === productId && product.quntity > 1) {
           return { ...product, quntity: product.quntity - 1 };
         }
         return product;
       });
-
-      await axios.patch(`http://localhost:5001/users/${id}`, { cart: updatedCart });
+   
+      setCartt(updatedCart)
+      await axios.patch(`/api/v1/updatecart/${id}`, { temp: updatedCart }).then(()=>{
+       
+      })
       
     } catch (err) {
       console.error('Error updating product quantity:', err);
@@ -71,11 +95,14 @@ function ContextProvider({ children }) {
   };
   const handleRemoveProduct = async (productId) => {
     try {
-      const updatedCart = cartt.filter(product => product.id !== productId);
+    
+      const updatedCart = cartt.filter(product => product._id !== productId)
     
       
-   
-        await axios.patch(`http://localhost:5001/users/${id}`, { cart: updatedCart });
+      setCartt(updatedCart)
+         await axios.patch(`/api/v1/updatecart/${id}`, { temp: updatedCart }).then(()=>{
+         
+        })
       
    
      
@@ -94,16 +121,28 @@ function ContextProvider({ children }) {
   useEffect(() => {
     const fetchUserCart = async () => {
       try {
-        const response = await axios.get(`http://localhost:5001/products`);
+        const response = await axios.get(`/api/v1/products`);
         setCart(response.data);
-        const res = await axios.get(`http://localhost:5001/users/${id}`);
+        const res = await axios.get(`/api/v1/auth/findusers/${id}`);
+        setUser(res.data)
         setCartt(res.data.cart);
         setBuy(res.data.buy)
+      
+        
         setIsBolked(res.data.isBlock)
-        const usee= await axios.get(`http://localhost:5001/users`)
         
         
-      setUsers(usee.data)
+        const data=JSON.parse(sessionStorage.getItem('user'))
+        if(data){
+          const parsData=JSON.parse(data)
+          setAuth({
+            ...auth,
+            user:parsData.user,
+            token:parsData.token
+          })
+        }
+      
+      
         
       } catch (err) {
         console.error('Error fetching data:', err);
@@ -111,10 +150,11 @@ function ContextProvider({ children }) {
     };
 
     fetchUserCart();
-  }, [cartt,id]);
+
+  }, [id,auth] );
 
   return (
-    <ContextOfAll.Provider value={{ cart, selectingproduct, FindProduct, id, handleIncrementProduct,handleDecrementProduct ,handleRemoveProduct,cartt,buy,users,userShow,userId,isBloked,setCart}}>
+    <ContextOfAll.Provider value={{ cart, selectingproduct, FindProduct, id, handleIncrementProduct,handleDecrementProduct ,handleRemoveProduct,cartt,buy,userShow,userId,isBloked,setCart,auth,setAuth,setCartt,user}}>
       {children}
     </ContextOfAll.Provider>
   );

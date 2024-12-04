@@ -12,26 +12,30 @@ import { toast } from 'react-toastify';
 function HomePage() {
     const navigate = useNavigate();
    const{isBloked}=useContext(ContextOfAll)
+
+
  
 
+     
 
     useEffect(() => {
    
-      const username = sessionStorage.getItem('username');
+      const username = sessionStorage.getItem('auth_token') || document.cookie.split('; ').find(row => row.startsWith('auth_token='));
+      
+    
       if (!username) {
           navigate('/login');
-      }else if(isBloked){
+      }
+       if(isBloked){
         navigate('/login');
         toast.warning('you cannot login with this account pleas try anothor one ')
-
+   
       }
-        
-      
      
   }, [isBloked,navigate]);
 
 
- 
+
  
     return (
         <div>
